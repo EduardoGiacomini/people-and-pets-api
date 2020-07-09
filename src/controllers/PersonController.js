@@ -1,13 +1,25 @@
 const knex = require('../database');
 
 module.exports = {
-    async findAll(req, res) {
+    async findAll(req, res, next) {
         try {
             const peopleFound = await knex('people');
             return res.json(peopleFound);
         } catch (error) {
             next(error);   
         }   
+    },
+
+    async findById(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const personFound = await knex('people').where({ id }).first();
+
+            return res.json(personFound);
+        } catch (error) {
+            next(error);
+        }
     },
 
     async create(req, res, next) {
