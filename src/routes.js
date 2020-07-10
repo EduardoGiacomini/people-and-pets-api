@@ -12,5 +12,6 @@ routes.delete('/api/people/:id', PersonController.delete);
 
 routes.get('/api/pets', PetController.findAll);
 routes.get('/api/pets/person/:person_id', PetController.findByPersonId);
+routes.post('/api/pets', PetController.create);
 
 module.exports = routes;

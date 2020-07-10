@@ -27,5 +27,18 @@ module.exports = {
         } catch (error) {
             next(error);   
         }   
+    },
+
+    async create(req, res, next) {
+        try {
+            const { name, kind, personId } = req.body;
+
+            await knex('pets')
+                .insert({ name, kind, person_id: personId });
+
+            return res.status(201).json({ name, kind, personId });
+        } catch (error) {
+            next(error)
+        }
     }
 };
