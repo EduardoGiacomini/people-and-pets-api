@@ -1,4 +1,6 @@
-exports.up = function(knex) {
+const { onUpdateTrigger } = require('../../../knexfile');
+
+exports.up = async function(knex) {
     return knex.schema.createTable('pets', function(table) {
         table.increments('id'),
         table.string('name', 255).notNullable(),
@@ -10,9 +12,12 @@ exports.up = function(knex) {
 
         table.timestamp('created_at').defaultTo(knex.fn.now())
         table.timestamp('updated_at').defaultTo(knex.fn.now())
-    });
+    })
+        .then(function() {
+            return knex.raw(onUpdateTrigger('pets'));
+        });
 };
 
-exports.down = function(knex) {
-    return knex.schema.dropTable('people');
+exports.down = async function(knex) {
+    return knex.schema.dropTable('pets');
 };
