@@ -3,7 +3,11 @@ const knex = require('../database');
 module.exports = {
     async findAll(req, res, next) {
         try {
-            const petsFound = await knex('pets');
+            const { page = 1, limit = 5 } = req.query;
+
+            const fromIndex = ((page - 1) * limit);
+            const petsFound = await knex('pets').limit(limit).offset(fromIndex);
+
             return res.json(petsFound);
         } catch (error) {
             next(error);   
@@ -13,7 +17,9 @@ module.exports = {
     async findByPersonId(req, res, next) {
         try {
             const { person_id } = req.params;
+            const { page = 1, limit = 5 } = req.query;
             
+            const fromIndex = ((page - 1) * limit);
             const petsFound = await knex('pets')
                 .where({ person_id })
                 .join('people', 'people.id', '=', 'pets.person_id')
@@ -21,7 +27,9 @@ module.exports = {
                     'pets.name as pet_name',
                     'pets.kind as pet_kind',
                     'people.name as person_name',
-                    'people.phone as people_phone');
+                    'people.phone as people_phone')
+                .limit(limit)
+                .offset(fromIndex);
 
             return res.json(petsFound);
         } catch (error) {
