@@ -8,6 +8,9 @@ module.exports = {
             const fromIndex = ((page - 1) * limit);
             const petsFound = await knex('pets').limit(limit).offset(fromIndex);
 
+            const [ count ] = await knex('pets').count();
+
+            res.header('X-Total-Count', count['count'])
             return res.json(petsFound);
         } catch (error) {
             next(error);   
@@ -31,6 +34,9 @@ module.exports = {
                 .limit(limit)
                 .offset(fromIndex);
 
+            const [ count ] = await knex('pets').count().where({ person_id });
+
+            res.header('X-Total-Count', count['count'])
             return res.json(petsFound);
         } catch (error) {
             next(error);   
